@@ -8,6 +8,7 @@ import com.evernote.android.job.JobManager
 import eu.kanade.tachiyomi.data.backup.BackupCreatorJob
 import eu.kanade.tachiyomi.data.library.LibraryUpdateJob
 import eu.kanade.tachiyomi.data.notification.Notifications
+import eu.kanade.tachiyomi.data.sync.SyncUpdateJob
 import eu.kanade.tachiyomi.data.updater.UpdaterJob
 import eu.kanade.tachiyomi.util.LocaleHelper
 import org.acra.ACRA
@@ -61,6 +62,7 @@ open class App : Application() {
                     LibraryUpdateJob.TAG -> LibraryUpdateJob()
                     UpdaterJob.TAG -> UpdaterJob()
                     BackupCreatorJob.TAG -> BackupCreatorJob()
+                    SyncUpdateJob.TAG -> SyncUpdateJob()
                     else -> null
                 }
             }

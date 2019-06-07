@@ -113,6 +113,7 @@
     <string name="pref_category_tracking">Tracking</string>
     <string name="pref_category_advanced">Advanced</string>
     <string name="pref_category_about">About</string>
+    <string name="pref_category_sync">Sync</string>
 
       <!-- General section -->
     <string name="pref_library_columns">Library manga per row</string>
@@ -297,6 +298,11 @@
     <string name="pref_enable_acra">Send crash reports</string>
     <string name="pref_acra_summary">Helps fix any bugs. No sensitive data will be sent</string>
 
+    <!-- Sync -->
+    <string name="pref_enable_sync">Enable library syncing</string>
+    <string name="pref_sync_register">Register</string>
+    <string name="pref_sync_registration_configuration">Registration Configuration</string>
+    <string name="pref_sync_registration_close">Close</string>
 
     <!-- Login dialog -->
     <string name="login_title">Login for %1$s</string>
@@ -518,5 +524,18 @@
     <string name="channel_common">Common</string>
     <string name="channel_library">Library</string>
     <string name="channel_downloader">Downloader</string>
+    <string name="sync_device_id">Device Id</string>
+    <string name="sync_server_endpoint">Server Endpoint</string>
+    <string name="sync_recovery_code">Recovery Code</string>
+    <string name="sync_register_new">Register New Account</string>
+    <string name="sync_register_success">Registered</string>
+    <string name="sync_register_error">Register error</string>
+    <string name="sync_register_loading">Registering</string>
+    <string name="sync_revoke">Revoke</string>
+    <string name="sync_revoke_confirmation">Confirm Revoke</string>
+    <string name="sync_register_code">Register via Account Code</string>
+    <string name="sync_register_recovery_code">Recover Via Recovery Code</string>
+    <string name="sync_register_account_code">Add to Account via Code</string>
+    <string name="sync_register_generate_account_code">Generate Account Code</string>
 
 </resources>

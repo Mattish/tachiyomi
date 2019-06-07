@@ -53,6 +53,12 @@ class SettingsMainController : SettingsController() {
             titleRes = R.string.pref_category_about
             onClick { navigateTo(SettingsAboutController()) }
         }
+        preference {
+            iconRes = R.drawable.ic_help_black_24dp
+            iconTint = tintColor
+            titleRes = R.string.pref_category_sync
+            onClick { navigateTo(SettingsSyncController()) }
+        }
     }
 
     private fun navigateTo(controller: SettingsController) {

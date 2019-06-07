@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:id="@+id/chapters_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectable_list_drawable"
+        android:clickable="false"
+        android:padding="16dp">
+
+        <TextView
+            style="@style/TextAppearance.Regular.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sync_server_endpoint" />
+
+        <TextView
+            android:id="@+id/sync_server_endpoint"
+            style="@style/TextAppearance.Regular.Body1.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:gravity="end"
+            android:text="" />
+
+    </LinearLayout>
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginRight="16dp"
+            android:background="?android:attr/divider" />
+
+    <LinearLayout
+        android:id="@+id/device_id_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectable_list_drawable"
+        android:clickable="false"
+        android:padding="16dp">
+
+        <TextView
+            style="@style/TextAppearance.Regular.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sync_device_id" />
+
+        <TextView
+            android:id="@+id/sync_device_id"
+            style="@style/TextAppearance.Regular.Body1.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:gravity="end"
+            android:text="-" />
+
+    </LinearLayout>
+
+    <View
+            android:id="@+id/divider3"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginRight="16dp"
+            android:background="?android:attr/divider" />
+
+    <LinearLayout
+        android:id="@+id/recovery_code_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectable_list_drawable"
+        android:clickable="false"
+        android:padding="16dp">
+
+        <TextView
+            style="@style/TextAppearance.Regular.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sync_recovery_code" />
+
+        <TextView
+            android:id="@+id/sync_recovery_code"
+            style="@style/TextAppearance.Regular.Body1.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:gravity="end"
+            android:text="-" />
+
+    </LinearLayout>
+
+    <com.dd.processbutton.iml.ActionProcessButton
+        android:id="@+id/sync_register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/sync_register_new"
+        android:textColor="@android:color/white"
+        app:pb_textComplete="@string/sync_register_success"
+        app:pb_textError="@string/sync_register_error"
+        app:pb_textProgress="@string/sync_register_loading" />
+
+    <com.dd.processbutton.iml.ActionProcessButton
+        android:id="@+id/sync_register_account_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/sync_register_account_code"
+        android:textColor="@android:color/white"
+        app:pb_textComplete="@string/sync_register_success"
+        app:pb_textError="@string/sync_register_error"
+        app:pb_textProgress="@string/sync_register_loading" />
+
+    <com.dd.processbutton.iml.ActionProcessButton
+        android:id="@+id/sync_register_recovery_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/sync_register_recovery_code"
+        android:textColor="@android:color/white"
+        app:pb_textComplete="@string/sync_register_success"
+        app:pb_textError="@string/sync_register_error"
+        app:pb_textProgress="@string/sync_register_loading" />
+
+    <EditText
+        android:id="@+id/sync_text_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:hint="Input Code"
+        android:inputType="none"
+        android:textAlignment="center" />
+
+    <com.dd.processbutton.iml.ActionProcessButton
+        android:id="@+id/sync_revoke"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/sync_revoke"
+        android:textColor="@android:color/white"
+        app:pb_colorNormal="@color/holo_red_light" />
+
+    <com.dd.processbutton.iml.ActionProcessButton
+        android:id="@+id/sync_revoke_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/sync_revoke_confirmation"
+        android:textColor="@android:color/white"
+        app:pb_colorNormal="@color/holo_red_light" />
+
+    <com.dd.processbutton.iml.ActionProcessButton
+        android:id="@+id/sync_register_generate_account_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/sync_register_generate_account_code"
+        android:textColor="@android:color/white"
+        app:pb_textComplete="@string/sync_register_success"
+        app:pb_textError="@string/sync_register_error"
+        app:pb_textProgress="@string/sync_register_loading" />
+
+</LinearLayout>
