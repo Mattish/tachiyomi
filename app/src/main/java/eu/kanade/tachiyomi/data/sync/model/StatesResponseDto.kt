@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 import java.util.*
 
 class StatesResponseDto(
-        @SerializedName("FromGuid", alternate = ["fromGuid","fromguid"]) var fromGuid: UUID,
         @SerializedName("FromVersionNumber", alternate = ["fromVersionNumber", "fromversionnumber"]) var FromVersionNumber: Int,
         @SerializedName("States", alternate = ["states"]) var states: List<StateResponseDto>
 )

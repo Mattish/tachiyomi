@@ -20,9 +20,8 @@
             android:layout_height="wrap_content"
             android:text="@string/sync_server_endpoint" />
 
-        <TextView
+        <EditText
             android:id="@+id/sync_server_endpoint"
-            style="@style/TextAppearance.Regular.Body1.Secondary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"

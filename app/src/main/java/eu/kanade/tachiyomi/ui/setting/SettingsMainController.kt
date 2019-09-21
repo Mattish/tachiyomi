@@ -30,7 +30,7 @@ class SettingsMainController : SettingsController() {
             onClick { navigateTo(SettingsDownloadController()) }
         }
         preference {
-            iconRes = R.drawable.ic_sync_black_24dp
+            iconRes = R.drawable.ic_tracking_black_24dp
             iconTint = tintColor
             titleRes = R.string.pref_category_tracking
             onClick { navigateTo(SettingsTrackingController()) }
@@ -40,6 +40,12 @@ class SettingsMainController : SettingsController() {
             iconTint = tintColor
             titleRes = R.string.backup
             onClick { navigateTo(SettingsBackupController()) }
+        }
+        preference {
+            iconRes = R.drawable.ic_sync_black_24dp
+            iconTint = tintColor
+            titleRes = R.string.pref_category_sync
+            onClick { navigateTo(SettingsSyncController()) }
         }
         preference {
             iconRes = R.drawable.ic_code_black_24dp
@@ -52,12 +58,6 @@ class SettingsMainController : SettingsController() {
             iconTint = tintColor
             titleRes = R.string.pref_category_about
             onClick { navigateTo(SettingsAboutController()) }
-        }
-        preference {
-            iconRes = R.drawable.ic_help_black_24dp
-            iconTint = tintColor
-            titleRes = R.string.pref_category_sync
-            onClick { navigateTo(SettingsSyncController()) }
         }
     }
 

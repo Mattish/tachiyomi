@@ -43,10 +43,10 @@ class SyncApiAccess {
             return gson.fromJson<VersionResponseDto>(responseBody, VersionResponseDto::class.java)
         }
 
-        fun getCurrentStates(fromVersion: Int, fromUuid: UUID): StatesResponseDto? {
+        fun getCurrentStates(fromVersion: Int): StatesResponseDto? {
             val client = client.newBuilder().build()
             val request = Request.Builder()
-                    .url("${SyncSettingsAccess.getSettings().endpoint}/states?fromVersion=${fromVersion}&fromGuid=${fromUuid}")
+                    .url("${SyncSettingsAccess.getSettings().endpoint}/states?fromVersion=${fromVersion}")
                     .get()
                     .build()
             val response = client

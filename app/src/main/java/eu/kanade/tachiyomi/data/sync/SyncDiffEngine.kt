@@ -9,7 +9,7 @@ import eu.kanade.tachiyomi.data.sync.model.MangaResponseDto
 class SyncDiffEngine {
 
     companion object {
-        fun getAddedOrUpdated(currentMangas: List<MangaResponseDto>, incomingMangas: List<MangaResponseDto>): List<MangaResponseDto> {
+        fun getAddedOrUpdated(currentMangas: List<MangaResponseDto>, incomingMangas: List<MangaResponseDto>): MutableList<MangaResponseDto> {
             val currentMangasMap = currentMangas.associateBy { it.url }
             val changedManga = mutableListOf<MangaResponseDto>()
 
@@ -20,7 +20,7 @@ class SyncDiffEngine {
                 } else {
                     val changedChapters = getDifferentChapters(currentManga.chapters, incomingManga.chapters).toMutableList()
                     if (changedChapters.any()) {
-                        changedManga.add(MangaResponseDto(incomingManga.url, incomingManga.title, incomingManga.source, changedChapters))
+                        changedManga.add(MangaResponseDto(incomingManga.url, incomingManga.title, incomingManga.source,incomingManga.thumbnailUrl,incomingManga.last_update,incomingManga.artist,incomingManga.author, changedChapters))
                     }
                 }
             }
@@ -55,7 +55,8 @@ class SyncDiffEngine {
                     }
                 }
                 if (potentialMangaChanges.any()) {
-                    safeToRemoteChanges.add(MangaResponseDto(potentialRemoteMangaChange.url, potentialRemoteMangaChange.title, potentialRemoteMangaChange.source, potentialMangaChanges))
+                    safeToRemoteChanges.add(MangaResponseDto(potentialRemoteMangaChange.url, potentialRemoteMangaChange.title, potentialRemoteMangaChange.source, potentialRemoteMangaChange.thumbnailUrl,
+                            potentialRemoteMangaChange.last_update,potentialRemoteMangaChange.artist,potentialRemoteMangaChange.author,potentialMangaChanges))
                 }
             }
             return safeToRemoteChanges

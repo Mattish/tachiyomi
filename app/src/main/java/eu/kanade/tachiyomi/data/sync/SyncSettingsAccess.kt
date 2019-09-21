@@ -1,9 +1,11 @@
 package eu.kanade.tachiyomi.data.sync
 
 import android.os.Environment
+import android.util.Log
 import com.google.gson.Gson
 import eu.kanade.tachiyomi.R
 import eu.kanade.tachiyomi.data.preference.PreferencesHelper
+import eu.kanade.tachiyomi.data.sync.SyncUpdateService.Companion.TAG
 import eu.kanade.tachiyomi.data.sync.model.SyncSettingsDto
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -117,10 +119,26 @@ class SyncSettingsAccess {
             }
         }
 
+        fun setEndpoint(endpoint: String) {
+            fileLock.withLock {
+                ensureSettingsFileExists()
+                val currentSettings = getSettings()
+                val settingsDto = SyncSettingsDto(endpoint, currentSettings.deviceId, currentSettings.recoveryCode, currentSettings.accessToken, currentSettings.automaticEnabled, currentSettings.automaticMinutesInterval, currentSettings.lastChecked)
+                val json = gson.toJson(settingsDto)
+                settingsFile.writeText(json)
+                callOnSettingsChanged(settingsDto)
+            }
+        }
+
         private fun ensureSettingsFileExists() {
             fileLock.withLock {
                 if (!settingsFile.exists()) {
-                    settingsFile.parentFile.mkdirs()
+                    var parentFolder = settingsFile.parentFile
+                    while(!parentFolder.exists()) {
+                        val createdParentFolder = parentFolder.mkdirs()
+                        Log.w(TAG,"Creating folder '$parentFolder' for sync files. Success:$createdParentFolder")
+                        parentFolder = parentFolder.parentFile
+                    }
                     settingsFile.createNewFile()
                     val settingsDto = SyncSettingsDto(defaultEndpoint, UUID.randomUUID(), null, null, true, 15, null)
                     val json = gson.toJson(settingsDto)

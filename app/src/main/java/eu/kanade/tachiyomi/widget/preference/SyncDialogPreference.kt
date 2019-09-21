@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.widget.preference
 
 import android.app.Dialog
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import com.afollestad.materialdialogs.MaterialDialog
 import com.bluelinelabs.conductor.ControllerChangeHandler
@@ -13,7 +12,6 @@ import eu.kanade.tachiyomi.data.database.DatabaseHelper
 import eu.kanade.tachiyomi.data.sync.SyncApiAccess
 import eu.kanade.tachiyomi.data.sync.SyncSettingsAccess
 import eu.kanade.tachiyomi.data.sync.SyncStateAccess
-import eu.kanade.tachiyomi.data.sync.SyncUpdateService.Companion.TAG
 import eu.kanade.tachiyomi.data.sync.model.AggregateSyncState
 import eu.kanade.tachiyomi.data.sync.model.ChapterResponseDto
 import eu.kanade.tachiyomi.data.sync.model.MangaResponseDto
@@ -27,8 +25,11 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
-import java.lang.Exception
 import java.util.*
+import android.text.Editable
+import android.text.TextWatcher
+import eu.kanade.tachiyomi.data.sync.SyncUpdateService
+
 
 class SyncDialogPreference(val db: DatabaseHelper = Injekt.get(), bundle: Bundle? = null) : DialogController(bundle) {
 
@@ -41,7 +42,6 @@ class SyncDialogPreference(val db: DatabaseHelper = Injekt.get(), bundle: Bundle
 
     private var newRegisterSubscription: Subscription? = null
     private var generateAccountCodeSubscription: Subscription? = null
-    private var currentState: State = State.UNREGISTERED;
 
     override fun onCreateDialog(savedState: Bundle?): Dialog {
         val dialog = MaterialDialog.Builder(activity!!)
@@ -63,6 +63,15 @@ class SyncDialogPreference(val db: DatabaseHelper = Injekt.get(), bundle: Bundle
             sync_register_generate_account_code.setOnClickListener { doGenerateCode() }
             sync_register_recovery_code.setOnClickListener { doRecoveryRegister() }
             sync_register_account_code.setOnClickListener { doAccountCodeRegister() }
+            sync_server_endpoint.setText(SyncSettingsAccess.getSettings().endpoint)
+            sync_server_endpoint.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun afterTextChanged(p0: Editable?) {}
+
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int , count: Int) {
+                    SyncSettingsAccess.setEndpoint(s.toString())
+                }
+            })
         }
         if (SyncSettingsAccess.isRegistered()) {
             updateViewTo(State.REGISTERED)
@@ -102,10 +111,13 @@ class SyncDialogPreference(val db: DatabaseHelper = Injekt.get(), bundle: Bundle
                     .map {
                         val accountCode = sync_text_input.text.toString()
                         val registrationResponseDto = SyncApiAccess.sendAccountCodeRegistration(UUID.randomUUID(), accountCode)
-                        val newAggregateState = AggregateSyncState(registrationResponseDto.initialState.guid, registrationResponseDto.initialState.versionNumber, mutableListOf())
-                        newAggregateState.applyStateResponseDto(registrationResponseDto.initialState)
-                        SyncSettingsAccess.setSettings(registrationResponseDto.recoveryCode, registrationResponseDto.secretToken)
+                        val currentLibStateResponse = StateResponseDto(0, mutableListOf(), mutableListOf(), Date(System.currentTimeMillis()))
+                        val newAggregateState = AggregateSyncState(-1, Date(System.currentTimeMillis()), mutableListOf())
+                        newAggregateState.applyStateResponseDto(currentLibStateResponse)
                         SyncStateAccess.writeState(newAggregateState)
+                        SyncSettingsAccess.setSettings(registrationResponseDto.recoveryCode, registrationResponseDto.secretToken)
+                        SyncSettingsAccess.updateLastCheckedDate(Date(System.currentTimeMillis()))
+                        SyncUpdateService.start(context)
                         registrationResponseDto
                     }
                     .subscribeOn(Schedulers.io())
@@ -153,12 +165,13 @@ class SyncDialogPreference(val db: DatabaseHelper = Injekt.get(), bundle: Bundle
             newRegisterSubscription = Single.just("Get")
                     .map {
                         val currentLibrary = getCurrentLibrary()
-                        val currentLibStateResponse = StateResponseDto(UUID.randomUUID(), 1, currentLibrary, listOf())
+                        val currentLibStateResponse = StateResponseDto(1, currentLibrary.toMutableList(), mutableListOf(), Date(System.currentTimeMillis()))
                         val registrationResponseDto = SyncApiAccess.sendRegistration(currentLibStateResponse)
-                        val newAggregateState = AggregateSyncState(registrationResponseDto.initialState.guid, registrationResponseDto.initialState.versionNumber, mutableListOf())
+                        val newAggregateState = AggregateSyncState(registrationResponseDto.initialState.versionNumber, registrationResponseDto.initialState.timestamp, mutableListOf())
                         newAggregateState.applyStateResponseDto(registrationResponseDto.initialState)
                         SyncStateAccess.writeState(newAggregateState)
                         SyncSettingsAccess.setSettings(registrationResponseDto.recoveryCode, registrationResponseDto.secretToken)
+                        SyncSettingsAccess.updateLastCheckedDate(Date(System.currentTimeMillis()))
                         newAggregateState
                     }
                     .subscribeOn(Schedulers.io())
@@ -180,10 +193,11 @@ class SyncDialogPreference(val db: DatabaseHelper = Injekt.get(), bundle: Bundle
                 .executeAsBlocking()
                 .filter { it.id != null }
                 .map {
-                    MangaResponseDto(it.url, it.title, it.source,
+                    MangaResponseDto(it.url, it.title, it.source, it.thumbnail_url,it.last_update,it.artist,it.author,
                             db.getChapters(it).executeAsBlocking().map {
-                                ChapterResponseDto(it.url, it.name, it.date_upload, it.chapter_number, it.read, it.bookmark, it.last_page_read, it.source_order)
+                                ChapterResponseDto(it.url, it.name, it.date_upload, it.date_fetch, it.chapter_number, it.read, it.bookmark, it.last_page_read, it.source_order)
                             }.toMutableList())
+
                 }
     }
 
@@ -191,7 +205,7 @@ class SyncDialogPreference(val db: DatabaseHelper = Injekt.get(), bundle: Bundle
         v?.apply {
             when (newState) {
                 State.UNREGISTERED -> {
-                    sync_server_endpoint.text = SyncSettingsAccess.getSettings().endpoint
+                    sync_server_endpoint.setText(SyncSettingsAccess.getSettings().endpoint)
                     sync_register.isEnabled = true
                     sync_register.setText(R.string.sync_register_new)
                     sync_register.progress = 0
@@ -211,7 +225,7 @@ class SyncDialogPreference(val db: DatabaseHelper = Injekt.get(), bundle: Bundle
                     sync_register.setText(R.string.sync_register_success)
                     sync_register.isEnabled = true
                     val currentSyncSettings = SyncSettingsAccess.getSettings()
-                    sync_server_endpoint.text = currentSyncSettings.endpoint
+                    sync_server_endpoint.setText(currentSyncSettings.endpoint)
                     sync_device_id.text = currentSyncSettings.deviceId.toString()
                     sync_recovery_code.text = currentSyncSettings.recoveryCode.toString()
 
@@ -240,7 +254,7 @@ class SyncDialogPreference(val db: DatabaseHelper = Injekt.get(), bundle: Bundle
                     sync_register.setText(R.string.sync_register_success)
                     sync_register.isEnabled = true
                     val currentSyncSettings = SyncSettingsAccess.getSettings()
-                    sync_server_endpoint.text = currentSyncSettings.endpoint
+                    sync_server_endpoint.setText(currentSyncSettings.endpoint)
                     sync_device_id.text = currentSyncSettings.deviceId.toString()
                     sync_recovery_code.text = currentSyncSettings.recoveryCode.toString()
 

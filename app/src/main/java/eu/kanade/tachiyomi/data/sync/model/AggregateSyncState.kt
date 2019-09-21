@@ -2,7 +2,7 @@ package eu.kanade.tachiyomi.data.sync.model
 
 import java.util.*
 
-class AggregateSyncState(var guid: UUID, var versionNumber: Int, val mangas: MutableList<MangaResponseDto>) {
+class AggregateSyncState(var versionNumber: Int, var timestamp: Date, val mangas: MutableList<MangaResponseDto>) {
     fun applyStateResponseDto(stateResponseDto: StateResponseDto) {
         for (mangaToApply in stateResponseDto.addedOrUpdatedMangas) {
             val existingManga = mangas.firstOrNull { it.url == mangaToApply.url }
@@ -26,7 +26,7 @@ class AggregateSyncState(var guid: UUID, var versionNumber: Int, val mangas: Mut
                 mangas.remove(existingManga)
             }
         }
-        guid = stateResponseDto.guid
         versionNumber = stateResponseDto.versionNumber
+        timestamp = stateResponseDto.timestamp
     }
 }

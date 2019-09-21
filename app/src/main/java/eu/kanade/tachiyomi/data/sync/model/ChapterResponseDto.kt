@@ -6,6 +6,7 @@ class ChapterResponseDto(
         @SerializedName("Url", alternate = ["url"]) var url: String,
         @SerializedName("Name", alternate = ["name"]) var name: String,
         @SerializedName("DateUpload", alternate = ["dateUpload","dateupload"]) var date_upload: Long,
+        @SerializedName("DateFetch", alternate = ["dateFetch","datefetch"]) var date_fetch: Long,
         @SerializedName("ChapterNumber", alternate = ["chapterNumber","chapternumber"]) var chapter_number: Float,
         @SerializedName("Read", alternate = ["read"]) var read: Boolean,
         @SerializedName("Bookmark", alternate = ["bookmark"]) var bookmark: Boolean,

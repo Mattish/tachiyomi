@@ -5,6 +5,5 @@ import java.util.*
 
 
 class VersionResponseDto(
-        @SerializedName("Guid", alternate = ["guid"]) val guid: UUID,
         @SerializedName("VersionNumber", alternate = ["versionNumber", "versionnumber"]) var versionNumber: Int)
 
